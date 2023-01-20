@@ -1,12 +1,38 @@
 import { Component, createSignal, For } from "solid-js";
 import { createStore } from 'solid-js/store';
 
-type TodoItem = { title: string; done: boolean };
-
 const App: Component = () => {
-  const [newTitle, setTitle] = createSignal("");
-  const [todos, setTodos] = createLocalStore<TodoItem[]>("todos", []);
+  type Task = {
+    id: string
+    text: string
+    completed: boolean
+  };
+  const [taskList, setTaskList] = createStore([] as Task[]);
+  const addTask = (e: Event) => {
+    e.preventDefault()
 
+    const taskInput = document.querySelector('#taskInput') as HTMLInputElement
+
+    const newTask: Task = {
+      id: Math.random().toString(36).substring(2),
+      text: taskInput.value,
+      completed: false,
+    }
+
+    setTaskList([newTask, ...taskList])
+
+    taskInput.value = ''
+  };
+  const deleteTask = (task: Task) => {
+    setTaskList(taskList.filter((item) => item !== task))
+  };
+  const toggleStatus = (taskId: string) => {
+    setTaskList(
+      (task) => task.id === taskId,
+      'completed',
+      (completed) => !completed,
+    )
+  };
   return (
     <div class="flex flex-col justify-center">
       <h1 class="mb-4 self-center text-zinc-800 hover:text-sky-800 text-4xl mt-4">note app</h1>
@@ -19,7 +45,7 @@ const App: Component = () => {
         </form>
       </div>
     </div>
-  )
+  );
 }
 
 export default App;
