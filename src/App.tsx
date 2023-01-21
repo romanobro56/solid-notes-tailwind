@@ -34,17 +34,40 @@ const App: Component = () => {
     <div class="flex flex-col justify-center">
       <h1 class="mb-4 self-center text-zinc-800 hover:text-sky-800 text-4xl mt-4">note app</h1>
       <div class="h-screen flex flex-col items-center">
-        <form class="bg-gray-600 shadow-lg rounded w-8/12 flex flex-col">
+        <form class="bg-gray-600 shadow-lg rounded w-10/12 flex flex-col max-w-4xl" autocomplete="off">
           <input type="text" id="taskInput" class="block w-11/12 p-4 self-center text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 m-5" />
           <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick={(e) => addTask(e)}>
           Add task
           </button>
         </form>
         <h1 class="my-5 self-center text-zinc-800 hover:text-red-700 text-3xl">tasks</h1>
-        <div class="grid-cols-2">
-          <For each={taskList}>
+        <div class="grid grid-cols-2 gap-4 h-min items-center rounded w-10/12 max-w-4xl">
+          <For each={taskList.filter((e)=> !(e.completed))}>
             {(task: Task) => (
-              <div class="h-min flex items-center bg-gray-600 shadow-lg rounded w-8/12 mb-5">
+              <div class="m-3 rounded bg-gray-500">
+                <button class="bg-red-500 py-2 px-4 rounded" onClick={() => deleteTask(task)}>
+                </button>
+                <div class={`bg-light p-2 mx-2 ${task.completed && 'text-decoration-line-through text-success'}`}>
+                  {task.text}
+                </div>
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  role="button"
+                  class=""
+                  onClick={() => {
+                    toggleStatus(task.id)
+                  }}
+                />
+              </div>
+              )}
+            </For>
+          </div>
+          <div class='w-10/12 h-1 bg-gray-500 max-w-4xl' />
+          <div class="grid grid-cols-2 gap-4 h-min items-center rounded w-10/12 max-w-4xl">
+            <For each={taskList.filter((e)=> (e.completed))}>
+            {(task: Task) => (
+              <div class="m-3 rounded bg-gray-400 min-h-50 flex flex-none justify-center">
                 <button class="bg-red-500 py-2 px-4 rounded" onClick={() => deleteTask(task)}>
                 </button>
                 <div class={`bg-light p-2 mx-2 ${task.completed && 'text-decoration-line-through text-success'}`}>
@@ -63,8 +86,7 @@ const App: Component = () => {
               )}
             </For>
           </div>
-      </div>
-        
+      </div> 
     </div>
   );
 }
